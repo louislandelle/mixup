@@ -1,4 +1,5 @@
 
+import numpy as np
 
 def buckets_interclass(labels, n_collectors, n_picks, *, verbose=False):
     """ Returns n collectors of size n_picks randomly picking from disctinct label buckets """
@@ -55,10 +56,11 @@ def buckets_intraclass(labels, n_collectors, n_picks, *, verbose=False):
     # Creates n_collectors collectors that will be returned of size n_picks
     collectors = np.zeros((n_collectors, n_picks), dtype=int)
     
-    # Picks a single class bucket to always pick from    
-    bucket_i = np.random.randint(buckets.shape[0])
     
     for pick_i in range(n_picks):
+        # Picks a single class bucket to always pick from    
+        bucket_i = np.random.randint(buckets.shape[0])
+    
         # Create the array storing remaining items indices to choose
         remaining_choices = buckets[bucket_i].copy()
         choice = None
