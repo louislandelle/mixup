@@ -1,0 +1,7 @@
+2020-01-09 11:41:39.135619    Trying lambda= [0.75 0.25]
+2020-01-09 11:41:39.213897    Performing n-mixup with N-mix: 2
+2020-01-09 11:41:39.214569    Epoch[1/1]
+2020-01-09 11:41:39.766642    train loss:2.3204 Epoch[1/1] Batch[0/500]
+2020-01-09 11:41:40.299910    val loss:2.6555 Epoch[1/1]
+2020-01-09 11:41:40.301133    val acc:13.0000 Epoch[1/1]
+2020-01-09 11:41:43.141433    Test Accuracy of the model on the test images: 10.0 %

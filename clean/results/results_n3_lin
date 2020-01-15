@@ -1,0 +1,7 @@
+2019-11-06 14:42:17.104341    Trying lambda= [0.33333333 0.33333333 0.33333333]
+2019-11-06 14:42:17.218407    Performing n-mixup with N-mix: 3
+2019-11-06 14:42:17.218898    Epoch[1/100]
+2019-11-06 14:42:21.573212    Loss :2.4951 Epoch[1/100] Batch[0/500] batch_shape:torch.Size([100, 3, 32, 32])
+2019-11-06 14:42:24.955134    Loss :2.2733 Epoch[1/100] Batch[50/500] batch_shape:torch.Size([100, 3, 32, 32])
+2019-11-06 14:42:28.275441    Loss :2.2433 Epoch[1/100] Batch[100/500] batch_shape:torch.Size([100, 3, 32, 32])
+2019-11-06 14:42:31.602103    Loss :2.2451 Epoch[1/100] Batch[150/500] batch_shape:torch.Size([100, 3, 32, 32])

@@ -1,0 +1,11 @@
+2019-12-02 03:29:55.230314    Epoch[1/5]
+2019-12-02 03:29:55.845806    Loss :2.4895 Epoch[1/5] Batch[0/500] batch_shape:torch.Size([100, 3, 32, 32])
+2019-12-02 03:29:56.271966    Epoch[2/5]
+2019-12-02 03:29:56.920682    Loss :6.4202 Epoch[2/5] Batch[0/500] batch_shape:torch.Size([100, 3, 32, 32])
+2019-12-02 03:29:57.401240    Epoch[3/5]
+2019-12-02 03:29:58.108846    Loss :2.4077 Epoch[3/5] Batch[0/500] batch_shape:torch.Size([100, 3, 32, 32])
+2019-12-02 03:29:58.581525    Epoch[4/5]
+2019-12-02 03:29:59.266163    Loss :2.3068 Epoch[4/5] Batch[0/500] batch_shape:torch.Size([100, 3, 32, 32])
+2019-12-02 03:29:59.837652    Epoch[5/5]
+2019-12-02 03:30:00.798994    Loss :2.3308 Epoch[5/5] Batch[0/500] batch_shape:torch.Size([100, 3, 32, 32])
+2019-12-02 03:30:04.613001    Test Accuracy of the model on the test images: 9.57 %
