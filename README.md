@@ -6,7 +6,7 @@ Image Obfuscation for Privacy-Preserving Machine Learning
 Below you can find the file structure of the repository with an explaination of what each folder was used for.
 
  - essai2/ : First tries for results on various models and datasets
- - clean/ : A first clean-up of essai2/ which was promptly abandonned
+ - clean/ : A first clean-up of essai2/ which was discontinued for exps/ later
  - exps/ : The main folder in which most of the work was performed
    - results/ : The dumps of the outputs of most experiments used in the report
    - pdf_files/ : The pdf files of the figures used in the report
@@ -29,7 +29,7 @@ Here is a description of the files and folders in final/ destined to external re
  - lambdas.py : code to generate various lambdas described in the report
  - pixelshuffling.py : code to provide functions and the PixelShuffler class for Pixel-Shuffling
  - results_deser.py : see 3 - Experiment results below
- - 
+ - util.py : the code for utilities functions and most of Fixed-mixup and Pixel-shuffling. The docstrings for the functions describe what their role are.
 
 # 3 - Experiment results
 
@@ -41,10 +41,10 @@ The code used to deserialize dumped outputs is found in results_deser.py
 
 Here is the summary of the result notebooks and their use within the report:
 
-final/results_benchmark.ipynb -- Section 3, "Benchmark"
-final/results_initial.ipynb -- Subsection 4.4, "Initial results"
-final/results_finding_sweetspot.ipynb -- Subsection 4.5, "Generalized Fixed-mixup"
-final/results_sweetspot_vs_maxobf.ipynb -- Subsection 4.7, "Relationship between mean test accuracy and N"
-final/results_pixel_shuffling.ipynb -- Section 5, "Exploring Pixel-Shuffling"
-final/results_pixel_grafting.ipynb -- Section 6, "Exploring Pixel-Grafting"
+ - final/results_benchmark.ipynb -- Section 3, "Benchmark"
+ - final/results_initial.ipynb -- Subsection 4.4, "Initial results"
+ - final/results_finding_sweetspot.ipynb -- Subsection 4.5, "Generalized Fixed-mixup"
+ - final/results_sweetspot_vs_maxobf.ipynb -- Subsection 4.7, "Relationship between mean test accuracy and N"
+ - final/results_pixel_shuffling.ipynb -- Section 5, "Exploring Pixel-Shuffling"
+ - final/results_pixel_grafting.ipynb -- Section 6, "Exploring Pixel-Grafting"
 
