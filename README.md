@@ -14,6 +14,7 @@ Below you can find the file structure of the repository with an explaination of 
    - \*.ipynb : The other notebooks were used to perform the experiments, and to test various methods later inserted in \*.py files in final/.
  - final/ : The folder for the formatted code destined to external review
  - README.md : This file, the README
+ - Image Obfuscation for Privacy-Preserving Machine Learning.pdf : The submitted version of the report for this project
 
  
 # 2 - Contents of final/
