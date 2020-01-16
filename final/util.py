@@ -87,13 +87,19 @@ def no_overlap_perms_random(n, length, max_seconds=10, return_elapsed=False):
 
 def mixup_data_nmix(n_ways, X, y, lam_, device):
     """
-    Mixes data n ways with itself shuffled without overlaps, returns X_mixed and an array of every y shuffling
+    Mixes data n ways with itself shuffled without overlaps, returns X_mixed, an array of every y shuffling, and the shufflings themselves
     Example:
-        mixup_data(3, X, y, (.5, .5, 0)) will return X_mixed, y[permutation0], y[permutation1], y[permutation2]
+        mixup_data(3, X, y, (.5, .5, 0)) will return X_mixed, y[permutation0], y[permutation1], y[permutation2], permutation0, permutation1, permutation2
         and X_mixed will veriy X_mixed = .5*X[permutation0] + .5*X[permutation1] + 0*X[permutation2]
-    X: tensor of shape (batch_size, w, h, 3)
-    y: tensor of shape (batch_size,)
-    lam_: tensor of shape (n_ways, 1, 1, 1, 1)
+    Args:
+        X -- tensor of shape (batch_size, w, h, 3), original samples features
+        y -- tensor of shape (batch_size,), original samples groundtruths
+        lam_ -- tensor of shape (n_ways, 1, 1, 1, 1) to weigh samples in a sum
+        device -- device instance
+    Returns:
+        X_mixed -- resulting weighted sum of samples according to lam_
+        ys -- list of tensors of groundtruths of the training
+        perms -- permutation indices used ([permutation0, ...] as described above)
     """
     assert lam_.shape[0] == n_ways
     assert X.shape[0] == y.shape[0]
@@ -107,11 +113,33 @@ def mixup_data_nmix(n_ways, X, y, lam_, device):
     return X_mixed, ys, perms
 
 def mixup_criterion_nmix(criterion, preds, ys, lambda_v):
+    """
+    Loss used for multivariate mixup or pixel-grafting, weighted sum of criterion
+    Args:
+        criterion -- loss to linear combine
+        preds -- predicted values from the model
+        ys -- list of groundtruths to compute the loss of preds
+        lambda_v -- lambda vector with weights to sum the losses with
+    Returns:
+        Weighted sum of criterion evaluating losses between preds and groundtruths according to lambda_v
+    """
     return sum(lambda_v[i] * criterion(preds, ys[i]) for i in range(lambda_v.shape[0]))
 
 def pixelgraft_data(n_ways, X, y, pr_vec, device):
     """
-    
+    Pixel-graft X according to pr_vec, in a very similar way to mixup:
+    X_mixed on average contains pr_vec[0]*100% pixels of X[0] and
+    1-pr_vec[0]*100% pixels of X[1].
+    Args:
+        n_ways -- only there to match signature of function mixup_data_nmix
+        X -- tensor of shape (batch_size, w, h, 3), original samples features
+        y -- tensor of shape (batch_size,), original samples groundtruths
+        pr_vec -- vector for probabilities of pixel grafting. Only pr_vec[0] matters, as pr_vec[1] will be computed as 1 - pr_vec[0].
+        device -- device instance
+    Returns:
+        X_mixed -- resulting pixel-grafts of samples according to pr_vec
+        ys -- list of tensors of groundtruths of the training
+        perms -- permutation indices
     """
     pr = pr_vec[0]
     assert X.shape[0] == y.shape[0]
@@ -133,15 +161,14 @@ def pixelgraft_data(n_ways, X, y, pr_vec, device):
     
     return X_mixed, ys, perms
 
-def train_with_lambdas(model, device, criterion, optimizer, lambda_, trainloader, testloader, train_losses, val_losses, 
-                       *, N_BATCHES_TRAIN, print_=print, model_getter=None, n_epochs=None, n_batches=None,
-                      mixup_f=mixup_data_nmix):
-    """ Computes test accuracy of our model on testloader
+def train_with_lambdas(model, device, criterion, optimizer, lambda_, trainloader, testloader, train_losses, val_losses, *, N_BATCHES_TRAIN, print_=print, model_getter=None, n_epochs=None, n_batches=None, mixup_f=mixup_data_nmix):
+    """ Trains model on trainloader using mixup_f to mix data, and records losses.
     Args:
         model -- the model instance which was trained
         device -- the device used
         criterion -- the loss criterion
         optimizer -- optimization algorithm instance from torch.optim
+        lambda_ -- mixing vector, can also serve as pr_vec for Pixel-grafting
         trainloader -- DataLoader for the training dataset
         testloader -- DataLoader for the testing dataset
         train_losses -- dict str->[float] where the training losses were recorded into
@@ -153,7 +180,11 @@ def train_with_lambdas(model, device, criterion, optimizer, lambda_, trainloader
         n_batches -- Limit for the # of batches trained on each epoch, or None to train on all of them
         mixup_f -- Function (n, images, labels, lam_rs_tensor, device) -> (images_mx, ys, perms) to mixup samples
     Returns:
-        loss_value -- the loss value of this validation to serialize
+        train_losses -- updated train_losses
+        val_losses -- updated val_losses
+        images_mx -- last mixedup batch of images to serve for visualizations, debugging etc.
+        ys -- last mixedup batch of labels to serve for visualizations, debugging etc.
+        perms -- last mixedup indices permutations to serve for visualizations, debugging etc.
     """ 
     
     n_batches = n_batches if n_batches else N_BATCHES
@@ -175,7 +206,7 @@ def train_with_lambdas(model, device, criterion, optimizer, lambda_, trainloader
             if n_batches and batch_id > n_batches:
                 break
             labels, images = labels.to(device), images.to(device)
-            # Perform mixup
+            # Perform mixing
             images_mx, ys, perms = mixup_f(NMIX, images, labels, lam_rs_tensor, device)            
             outputs = model(images_mx)
             loss = mixup_criterion_nmix(criterion, outputs, ys, lam_rs_tensor)
@@ -265,9 +296,7 @@ def test(model, device, lambda_, testloader, test_accs, *, print_=print):
         test_accs[str(lambda_)] = test_acc
     return test_accs
 
-def perform_experiment(trainloader, testloader, lambdas, results_fname, *,
-                       N_BATCHES_TRAIN, model_getter, n_epochs=100, n_batches=None,
-                       mixup_f=mixup_data_nmix):
+def perform_experiment(trainloader, testloader, lambdas, results_fname, *, N_BATCHES_TRAIN, model_getter, n_epochs=100, n_batches=None, mixup_f=mixup_data_nmix):
     """
     Performs an experiment with loaders on every lambda_ in lambdas,
     and serializes results in results/results_fname

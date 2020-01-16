@@ -44,3 +44,9 @@ def sweetspot(N):
     """ Returns L=1 sweetspot lambda of size N described in the report """
     lambdas = [np.array([3/(4**(i+1)) for i in range(N-1)] + [.25**(N-1)])]
     return lambdas
+
+def maxobf(N):
+    """ Returns L=1 maxobf lambda of size N described in the report """
+    lambdas = [np.ones(N)]
+    lambdas = [l/l.sum() for l in lambdas]
+    return lambdas

@@ -6,7 +6,10 @@ import resnet
 import torch
 import torch.nn as nn
 
-# Wdie ResNet (7x7 conv window)
+"""
+Getter for the 10 classes version of ResNet18, for CIFAR10, if n unspecified.
+If n is specified, returns the n classes version of ResNet18
+"""
 def resnet18(n=10):
     """ Get model is used to remake the model between lambda attempts """
     if n==10:
@@ -14,9 +17,12 @@ def resnet18(n=10):
     else:
         return resnet.ResNet(resnet.BasicBlock, [2,2,2,2], num_classes=n)
 
+"""
+Getter for the 100 classes version of ResNet18, for CIFAR100
+"""
 resnet18_100classes = lambda: resnet18(100)
 
-# Fashion MNIST CNN
+""" Simple CNN with two convolution Layers + one FC layer, inspired by LeNet """
 class CNN(nn.Module):
     def __init__(self):
         super(CNN, self).__init__()
