@@ -51,8 +51,8 @@ def show_np_arr(arr, ax=None):
     else:
         plt.imshow(im)
 
-def show_loader(loader):
-    """ Shows a the first eight samples of loader for visual checks """
+def show_loader_cf(loader):
+    """ Shows the first eight samples of loader (CIFAR10/100) for visual checks """
     fig, axes = plt.subplots(1, 8, figsize=(15, 2))
     for images, labels in loader:
         for i in range(8):
@@ -60,6 +60,12 @@ def show_loader(loader):
             #axes[i].set_title(trainset.classes[labels[i]])
         break
 
+def show_loader_fm(loader):
+    """ Shows the first eight samples of loader (FMNIST) for visual checks """
+    fig, axes = plt.subplots(1, 8, figsize=(15, 2))
+    for i in range(8):
+        show_np_arr(next(iter(loader))[0][i][0, :, :], ax=axes[i])
+        
 def no_overlap_perms_random(n, length, max_seconds=10, return_elapsed=False):
     """
     Returns n random permutations of range(length) without overlaps using randomness
